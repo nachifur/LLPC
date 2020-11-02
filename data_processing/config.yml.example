@@ -1,0 +1,28 @@
+NETWORK: ENDE            # ENDE, UNET, RCF
+LOSS: BCELoss            # BCELoss, RCFLoss, AWBCELoss
+MODEL_NAME: EdgeDetect
+SUBJECT_WORD: cell
+
+APPEND: 0                # 1:True, 0:False
+BACKUP: 0                # 1:True, 0:False
+
+MIDDLE_RES_NUM: 4        # number of res block
+BATCH_SIZE: 4            # input batch size for training
+SAMPLE_SIZE: 4           # number of images to sample
+
+BETA1: 0.0               # adam optimizer beta1
+BETA2: 0.9               # adam optimizer beta2
+LR: 0.0001               # adam learning rate
+
+GPU: [0]                 # list of gpu ids
+SEED: 10                 # random seed
+INPUT_SIZE_H: 192        # input batch height for training
+INPUT_SIZE_W: 256        # input batch width for training
+VERBOSE: 0               # turns on verbose mode in the output console
+LOG_INTERVAL: 10         # how many iterations to wait before logging training status (0: never)
+
+SPLIT: 1                 # 1:True, 0:False
+SPLIT_NUM: 4             # split a large image into 4*4 small blocks
+
+RESULTS: ./checkpoints/cell/results             # when test, the path of output
+RESULTS_SAMPLE: 1                               # 1:True, 0:False
