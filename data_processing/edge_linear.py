@@ -41,6 +41,7 @@ def gen_edge_from_point(data_path, debug):
 
 
 def gen_edge(f_img):
+    # Jiawei Liu <liujiawei18@mails.ucas.ac.cn>
     global edge_path, img_path, jsons_path, debug_g
     f_img_path = os.path.join(img_path, f_img.split('.')[0]+".png")
     f_json_path = os.path.join(jsons_path, f_img)

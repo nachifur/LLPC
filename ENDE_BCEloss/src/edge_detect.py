@@ -85,7 +85,7 @@ class EdgeDetect():
                 data_save_path, dtype=np.str, encoding='utf-8').astype(np.float).astype(np.int)
             i = 0
             for epoch in self.epoch:
-                if epoch > 0:
+                if epoch > 0 and config.MODE == 0:
                     self.epoch[i] = epoch-1
                 i += 1
         else:

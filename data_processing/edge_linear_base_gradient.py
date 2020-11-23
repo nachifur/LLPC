@@ -41,6 +41,7 @@ def gen_edge_from_point_base_gradient(data_path, debug):
 
 
 def gen_edge_base_gradient(f_img):
+    # Jiawei Liu <liujiawei18@mails.ucas.ac.cn>
     global edge_path, img_path, jsons_path, debug_g
     f_img_path = os.path.join(img_path, f_img.split('.')[0]+".png")
     f_json_path = os.path.join(jsons_path, f_img)
@@ -90,14 +91,15 @@ def gen_edge_base_gradient(f_img):
                     x, group_num, y, search_radius, imW, imH, spacing, edge_width, gradient_GaussianBlur, grad_v_suppress)
 
                 # Linear interpolation where the spacing is large
-                interp_step = 1 # 0<interp_step<3. The smaller the value, the finer the fit
+                interp_step = 1  # 1<=interp_step<3. The smaller the value, the finer the fit
                 x_edit_0, y_edit_0 = interp_point(
                     x_edit_0, y_edit_0, interp_step)
 
                 # Use local weighted linear fitting to smooth edges, point->edges
                 # 1.delete_end_point=-1, space=1 -> smooth edges, the sampling point interval can be adjusted by interp_step.
                 # 2.delete_end_point=1,2,etc, space!=1, the sampling point interval can be adjusted by sample_step.
-                cell_group_num = 7 # cell_group_num is odd, (cell_group_num-1)/2>delete_end_point
+                # cell_group_num is odd, (cell_group_num-1)/2>delete_end_point
+                cell_group_num = 7
                 x_edit_1, y_edit_1 = local_linear_fit_edge(
                     x_edit_0, y_edit_0, cell_kernel_data['label'], interp_step, cell_group_num, delete_end_point=-1, sample_step=1)
 
@@ -112,9 +114,10 @@ def gen_edge_base_gradient(f_img):
         point_edit.append([x_edit_2, y_edit_2])
 
     if debug_g:
-        # gradient_img = Image.fromarray(gradient)
-        # imshow_img_point(
-        #     gradient_img, [point_a, point_s, point_edit_0, point_edit])
+        gradient_img = Image.fromarray(gradient)
+        # candidate points, original points, smooth edge, discrete edge digital image
+        # imshow_img_point(gradient_img, [[], [], [], point_edit])
+        imshow_img_point(gradient_img, [point_a, point_s, point_edit_0, point_edit])
 
         sobel_x = cv2.Sobel(img, cv2.CV_16S, 1, 0, ksize=3)
         sobel_y = cv2.Sobel(img, cv2.CV_16S, 0, 1, ksize=3)
@@ -125,8 +128,8 @@ def gen_edge_base_gradient(f_img):
             edge[point[1], point[0]] = uint8(255)
         edge[edge > 0] = 1
         edge = (morphology.skeletonize(edge)).astype(np.uint8)
-        edge[edge == 1] = 1  
-        edge=edge[:,:,newaxis]
+        edge[edge == 1] = 1
+        edge = edge[:, :, newaxis]
         imshow(Image.fromarray((1-edge)*(255-gradient)))
     else:
         # genarte edge image from point
@@ -145,10 +148,10 @@ def limit_xy(imW, x_edit, imH, y_edit):
     x_edit[x_edit < 0] = 0
     y_edit[y_edit > imH-1] = imH-1
     y_edit[y_edit < 0] = 0
-    x_edit = np.rint(x_edit)
-    y_edit = np.rint(y_edit)
-    x_edit = x_edit.astype(int)
-    y_edit = y_edit.astype(int)
+    # x_edit = np.rint(x_edit)
+    # y_edit = np.rint(y_edit)
+    # x_edit = x_edit.astype(int)
+    # y_edit = y_edit.astype(int)
     return x_edit, y_edit
 
 
@@ -157,24 +160,25 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
     # select bandwidth (h): McCrary, Justin. 2008. “Manipulation of the runningvariable in the regression discontinuity design:A density test.” Journal of Econometrics 142 (2):698–714.
     #                       Ghanem D, Zhang J. ‘Effortless Perfection:’Do Chinese cities manipulate air pollution data?[J]. Journal of Environmental Economics and Management, 2014, 68(2): 203-225.
     point_num = len(x_edit_0)
-    
-    if cell_kernel=='cell':
-        group_num = int(interp_step*point_num/40) if int(interp_step*point_num/40)>cell_group_num else cell_group_num
+
+    if cell_kernel == 'cell':
+        group_num = int(interp_step*point_num/40) if int(interp_step *
+                                                         point_num/40) > cell_group_num else cell_group_num
         a = 10
     else:
-        group_num = int(interp_step*point_num/10) if int(interp_step*point_num/10)>3 else 3
+        group_num = int(interp_step*point_num /
+                        10) if int(interp_step*point_num/10) > 3 else 3
         a = 5
     c = int(group_num*interp_step)/6
 
     fit_radius = int((group_num-1)/2)
-    flag=0
-    if delete_end_point==-1:
+    flag = 0
+    if delete_end_point == -1:
         flag = 1
         delete_end_point = fit_radius-0.5
-    if cell_kernel=='kernel':
+    if cell_kernel == 'kernel':
         delete_end_point = 0
     group_spacing = int((fit_radius-delete_end_point)*2)
-
 
     num_gap = point_num  # cyclic: num_gap = point_num, acyclic: num_gap = point_num-1
     num_all = (num_gap//group_spacing+1)*group_spacing-1
@@ -227,7 +231,7 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
             point_mat[0, :] = x_i[np.newaxis, :]
             point_mat[1, :] = y_i[np.newaxis, :]
             point_new_mat = M*point_mat
-            if i == for_l[-1] and num_repeat_block != 0 and flag==0:
+            if i == for_l[-1] and num_repeat_block != 0 and flag == 0:
                 sample_x = point_new_mat[0, 0:-num_repeat_block]
                 sample_y = point_new_mat[1, 0:-num_repeat_block]
             else:
@@ -243,13 +247,16 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
                     0, sample_x[0, -1], num_x))
 
             # local weighted linear fitting
-            if flag==0:
-                fit_x = np.arange(sample_x[0, delete_end_point], sample_x[0, -1-delete_end_point], sample_step)
+            if flag == 0:
+                fit_x = np.arange(
+                    sample_x[0, delete_end_point], sample_x[0, -1-delete_end_point], sample_step)
             else:
                 fit_x = np.array([sample_x[0, fit_radius+1]])
 
             b = 2*np.std(sample_y)/np.sqrt(num_x)
             h = a*b + c
+            if h == 0:
+                h = 1
 
             fit_y = np.zeros_like(fit_x)
             temp = np.mat(np.ones((2, num_x)))
@@ -263,7 +270,7 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
                     K_h_all[k_w] = gaussian_kernel(
                         (fit_x[k_fit_y]-sample_x[1, k_w])/h)/h
                 sum_K_h_all = sum(K_h_all)
-                if flag==1:
+                if flag == 1:
                     max_k_h = np.max(K_h_all)
                     # K_h correction
                     for k_w in range(0, num_x):
