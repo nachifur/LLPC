@@ -68,9 +68,17 @@ ODS:    F(0.641,0.542) = 0.588    [th=0.310]
 OIS:    F(0.687,0.522) = 0.593
 AP:    AP = 0.614
 ```
-# Citation
-
-# Contact
+# 6. Citation
+If you find our work useful in your research, please consider citing:
+```
+@article{liu2020automatic,
+  title={Automatic label correction based on CCESD},
+  author={Liu, Jiawei and Wang, Qiang and Fan, Huijie and Tang, Yandong},
+  journal={arXiv preprint arXiv:2010.01919},
+  year={2020}
+}
+```
+# 7. Contact
 Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
 
 [![HitCount](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD.svg)](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD )
