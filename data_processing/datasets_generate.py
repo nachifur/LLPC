@@ -11,7 +11,7 @@ import sys
 # else:
 #     debug=0
 
-debug=1
+debug=0
 # label_correct
 DATA_PATH = "../cell_data/label_correct"
 train_ratio = 6

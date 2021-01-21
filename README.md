@@ -1,6 +1,76 @@
 # automatic_label_correction_based_CCEDD
-This is informal code.
 
-paper: https://arxiv.org/abs/2010.01919
+# 1. Resources
+* Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
+* Results on CCEDD: [ENDE_BCELoss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EYqcLCKYIyBCkuV9clTGN1ABHi72SUV6SL_dzdnLookx2A?e=eFxUHt)
+* paper: [Automatic label correction for accurate edge detection of
+overlapping cervical cell](https://arxiv.org/abs/2010.01919)
+
+# 2. Environments
+ubuntu18.04+cuda10.2+pytorch1.1.0
+
+create environments
+```
+conda env create -f install.yaml
+```
+activate environments
+```
+conda activate automatic_label_correction_based_CCEDD
+```
+# 3. Datset - CCEDD
+**Although we provide uncorrected labels, we recommend that you use corrected labels to train the model.**
+## 3.1 Download Datset
+[Download CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
+
+The data folders should be:
+```
+automatic_label_correction_based_CCEDD
+    * cell_data
+        - label_correct
+            - edge
+            - png
+        - label_no_correct
+            - edge
+            - png
+```
+unzip: 
+* CCEDD/edge_correct.zip -> automatic_label_correction_based_CCEDD/cell_data/label_correct
+* CCEDD/png.zip -> automatic_label_correction_based_CCEDD/cell_data/label_correct
+* CCEDD/edge_no_correct.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
+* CCEDD/png.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
+
+## 3.2 Generate Datset
+```
+cd data_processing
+python data_processing/datasets_generate.py
+```
+
+# 4. Training
+```
+cp data_processing/label_correct_config.yml ENDE_BCEloss/config.yml.example
+conda activate automatic_label_correction_based_CCEDD
+cd ENDE_BCEloss
+python run.py
+```
+# 5. Test / Result
+`python run.py` can complete training, testing, and evaluation. 
+
+You can use the following command to view the evaluation result.
+```
+cd ENDE_BCEloss
+python ENDE_BCEloss/show_eval_result.py
+```
+ENDE_BCEloss Result:
+```
+average precision mean:    0.676
+average recall mean:    0.449
+ODS:    F(0.641,0.542) = 0.588    [th=0.310]
+OIS:    F(0.687,0.522) = 0.593
+AP:    AP = 0.614
+```
+# Citation
+
+# Contact
+Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
 
 [![HitCount](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD.svg)](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD )
