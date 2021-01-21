@@ -5,13 +5,12 @@ import sys
 # debug
 # python datasets_generate.py 1
 
-# inputs = sys.argv[1]
-# if inputs=="1":
-#     debug=1
-# else:
-#     debug=0
+inputs = sys.argv[1]
+if inputs=="1":
+    debug=1
+else:
+    debug=0
 
-debug=0
 # label_correct
 DATA_PATH = "../cell_data/label_correct"
 train_ratio = 6

@@ -43,7 +43,7 @@ unzip:
 ## 3.2 Generate Datset
 ```
 cd data_processing
-python data_processing/datasets_generate.py
+python data_processing/datasets_generate.py 0
 ```
 
 # 4. Training
@@ -69,7 +69,32 @@ ODS:    F(0.641,0.542) = 0.588    [th=0.310]
 OIS:    F(0.687,0.522) = 0.593
 AP:    AP = 0.614
 ```
-# 6. Citation
+# 6. Automatic Label Correction algorithm
+Our correction algorithm requires the original annotation file. We currently do not publish annotated files, but provide [5 json files](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EcMzbZ5P6d5LhsczwZLqsNABKy-5zNsaERh6hA3XbatEDA?e=ydMerP) for testing. 
+## 1. Unzip Annotated Files
+unzip: 
+* json.zip -> automatic_label_correction_based_CCEDD/cell_data/label_correct
+* json.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
+## 2. Debug for Automatic Label Correction algorithm
+Edit `data_processing/data_processing.py`, uncomment the code below:
+```
+    generate edge from points
+    time_start=time.time()
+    print(time_start)
+    if label_correct:
+        gen_edge_from_point_base_gradient(DATA_PATH, debug)
+    else:
+        gen_edge_from_point(DATA_PATH, debug)
+    time_end=time.time()
+    print(time_end)
+    print('generate edge from points time cost',time_end-time_start,'s')
+```
+Debug for automatic label correction algorithm.
+```
+cd data_processing
+python data_processing/datasets_generate.py 1
+```
+# 7. Citation
 If you find our work useful in your research, please consider citing:
 ```
 @article{liu2020automatic,
@@ -79,7 +104,7 @@ If you find our work useful in your research, please consider citing:
   year={2020}
 }
 ```
-# 7. Contact
+# 8. Contact
 Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
 
 [![HitCount](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD.svg)](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD )
