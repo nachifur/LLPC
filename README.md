@@ -108,4 +108,3 @@ waiting...
 # 8. Contact
 Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
 
-[![HitCount](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD.svg)](http://hits.dwyl.com/nachifur-ljw/automatic_label_correction_based_CCEDD )
