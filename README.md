@@ -95,15 +95,16 @@ cd data_processing
 python data_processing/datasets_generate.py 1
 ```
 # 7. Citation
-If you find our work useful in your research, please consider citing:
-```
-@article{liu2020automatic,
-  title={Automatic label correction based on CCESD},
-  author={Liu, Jiawei and Wang, Qiang and Fan, Huijie and Tang, Yandong},
-  journal={arXiv preprint arXiv:2010.01919},
-  year={2020}
-}
-```
+waiting...
+// If you find our work useful in your research, please consider citing:
+// ```
+// @article{liu2020automatic,
+//   title={Automatic label correction based on CCESD},
+//   author={Liu, Jiawei and Wang, Qiang and Fan, Huijie and Tang, Yandong},
+//   journal={arXiv preprint arXiv:2010.01919},
+//   year={2020}
+// }
+// ```
 # 8. Contact
 Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
 
