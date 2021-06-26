@@ -40,7 +40,7 @@ unzip:
 * CCEDD/edge_no_correct.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
 * CCEDD/png.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
 
-## 3.2 Generate Datset
+## 3.2 Generate Dataset
 ```
 cd data_processing
 python data_processing/datasets_generate.py 0
