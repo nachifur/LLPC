@@ -1,4 +1,4 @@
-# automatic_label_correction_based_CCEDD
+# automatic-label-correction-CCEDD
 **This is an informal version, please do not cite this article for now.
 You can use CCEDD, but you need to cite the official version of the article.**
 # 1. Resources
