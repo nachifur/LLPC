@@ -4,8 +4,7 @@ You can use CCEDD, but you need to cite the official version of the article.**
 # 1. Resources
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
 * Results on CCEDD: [ENDE_BCELoss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EYqcLCKYIyBCkuV9clTGN1ABHi72SUV6SL_dzdnLookx2A?e=eFxUHt)
-* paper: [Automatic label correction for accurate edge detection of
-overlapping cervical cell](https://arxiv.org/abs/2010.01919)
+* [paper](https://arxiv.org/abs/2010.01919)
 
 # 2. Environments
 ubuntu18.04+cuda10.2+pytorch1.1.0
