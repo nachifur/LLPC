@@ -1,6 +1,4 @@
 # automatic-label-correction-CCEDD
-**This is an informal version, please do not cite this article for now.
-You can use CCEDD, but you need to cite the official version of the article.**
 # 1. Resources
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
 * Results on CCEDD: [ENDE_BCELoss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EYqcLCKYIyBCkuV9clTGN1ABHi72SUV6SL_dzdnLookx2A?e=eFxUHt)
@@ -94,16 +92,15 @@ cd data_processing
 python data_processing/datasets_generate.py 1
 ```
 # 7. Citation
-waiting...
-<!-- If you find our work useful in your research, please consider citing:
+If you find our work useful in your research, please consider citing:
 ```
 @article{liu2020automatic,
-  title={Automatic label correction based on CCESD},
-  author={Liu, Jiawei and Wang, Qiang and Fan, Huijie and Tang, Yandong},
+  title={Automatic Label Correction for the Accurate Edge Detection of Overlapping Cervical Cells},
+  author={Jiawei Liu, Qiang Wang, Huijie Fan, Shuai Wang, Wentao Li, Yandong Tang, Danbo Wang, Mingyi Zhou, Li Chen},
   journal={arXiv preprint arXiv:2010.01919},
   year={2020}
 }
-```--> 
+```
 # 8. Contact
 Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
 
