@@ -110,4 +110,4 @@ Terms of use: by downloading the CCEDD you agree to the following terms:
 - You accept full responsibility for your use of the data and shall defend and indemnify Shenyang Institute of Automation, Chinese Academy of Sciences, including its employees, officers and agents, against any and all claims arising from your use of the data, including but not limited to your use of any copies of copyrighted images that you may create from the data.
 
 # 9. Contact
-Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
+Please contact Jiawei Liu if there is any question (liujiawei18@mails.ucas.ac.cn).
