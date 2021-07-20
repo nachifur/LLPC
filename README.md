@@ -101,6 +101,13 @@ If you find our work useful in your research, please consider citing:
   year={2020}
 }
 ```
-# 8. Contact
-Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
+# 8. Terms of use 
+Terms of use: by downloading the CCEDD you agree to the following terms:
 
+- You will use the data only for non-commercial research and educational purposes.
+- You will NOT distribute the above images.
+- Shenyang Institute of Automation, Chinese Academy of Sciences makes no representations or warranties regarding the data, including but not limited to warranties of non-infringement or fitness for a particular purpose.
+- You accept full responsibility for your use of the data and shall defend and indemnify Shenyang Institute of Automation, Chinese Academy of Sciences, including its employees, officers and agents, against any and all claims arising from your use of the data, including but not limited to your use of any copies of copyrighted images that you may create from the data.
+
+# 9. Contact
+Please contact me if there is any question (Jiawei Liu liujiawei18@mails.ucas.ac.cn)
