@@ -96,7 +96,7 @@ If you find our work useful in your research, please consider citing:
 ```
 @article{liu2020automatic,
   title={Automatic Label Correction for the Accurate Edge Detection of Overlapping Cervical Cells},
-  author={Jiawei Liu, Qiang Wang, Huijie Fan, Shuai Wang, Wentao Li, Yandong Tang, Danbo Wang, Mingyi Zhou, Li Chen},
+  author={Liu, Jiawei and Wang, Qiang and Fan, Huijie and Wang, Shuai and Li, Wentao and Tang, Yandong and Wang, Danbo and Zhou, Mingyi and Chen, Li},
   journal={arXiv preprint arXiv:2010.01919},
   year={2020}
 }
