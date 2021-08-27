@@ -1,3 +1,8 @@
+<p align="center">
+<a href="https://github.com/nachifur/automatic-label-correction-CCEDD" target="_blank">
+<img align="center" alt="multiple images viewer" src="https://github.com/nachifur/automatic-label-correction-CCEDD/blob/master/CCEDD.jpg" />
+</a>
+</p>
 # automatic-label-correction-CCEDD
 # 1. Resources
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
