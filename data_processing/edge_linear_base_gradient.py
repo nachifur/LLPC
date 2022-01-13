@@ -125,7 +125,7 @@ def gen_edge_base_gradient(f_img):
         sobel_y = cv2.convertScaleAbs(sobel_y)
         gradient = cv2.addWeighted(sobel_x, 0.5, sobel_y, 0.5, 0)
         for point in point_edit:
-            edge[point[1], point[0]] = uint8(255)
+            edge[(point[1]).astype(int),(point[0]).astype(int)] = uint8(255)
         edge[edge > 0] = 1
         edge = (morphology.skeletonize(edge)).astype(np.uint8)
         edge[edge == 1] = 1
@@ -134,7 +134,7 @@ def gen_edge_base_gradient(f_img):
     else:
         # genarte edge image from point
         for point in point_edit:
-            edge[point[1], point[0]] = uint8(255)
+            edge[(point[1]).astype(int),(point[0]).astype(int)] = uint8(255)
         edge[edge > 0] = 1
         edge = (morphology.skeletonize(edge)).astype(np.uint8)
         edge[edge == 1] = 255
