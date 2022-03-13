@@ -4,7 +4,6 @@
 </a>
 </p>
 
-# automatic-label-correction-CCEDD
 # 1. Resources
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
 * Results on CCEDD: [ENDE_BCELoss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EYqcLCKYIyBCkuV9clTGN1ABHi72SUV6SL_dzdnLookx2A?e=eFxUHt)
