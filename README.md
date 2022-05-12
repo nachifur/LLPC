@@ -99,11 +99,16 @@ python data_processing/datasets_generate.py 1
 # 7. Citation
 If you find our work useful in your research, please consider citing:
 ```
-@article{liu2020automatic,
-  title={Automatic Label Correction for the Accurate Edge Detection of Overlapping Cervical Cells},
-  author={Liu, Jiawei and Wang, Qiang and Fan, Huijie and Wang, Shuai and Li, Wentao and Tang, Yandong and Wang, Danbo and Zhou, Mingyi and Chen, Li},
-  journal={arXiv preprint arXiv:2010.01919},
-  year={2020}
+@ARTICLE{10.3389/fninf.2022.895290,
+AUTHOR={Liu, Jiawei and Fan, Huijie and Wang, Qiang and Li, Wentao and Tang, Yandong and Wang, Danbo and Zhou, Mingyi and Chen, Li},   
+TITLE={Local Label Point Correction for Edge Detection of Overlapping Cervical Cells},      
+JOURNAL={Frontiers in Neuroinformatics},      
+VOLUME={16},      
+YEAR={2022},      
+URL={https://www.frontiersin.org/article/10.3389/fninf.2022.895290},       
+DOI={10.3389/fninf.2022.895290},      
+ISSN={1662-5196},   
+ABSTRACT={Accurate labeling is essential for supervised deep learning methods. However, it is almost impossible to accurately and manually annotate thousands of images, which results in many labeling errors for most datasets. We proposes a local label point correction (LLPC) method to improve annotation quality for edge detection and image segmentation tasks. Our algorithm contains three steps: gradient-guided point correction, point interpolation, and local point smoothing. We correct the labels of object contours by moving the annotated points to the pixel gradient peaks. This can improve the edge localization accuracy, but it also causes unsmooth contours due to the interference of image noise. Therefore, we design a point smoothing method based on local linear fitting to smooth the corrected edge. To verify the effectiveness of our LLPC, we construct a largest overlapping cervical cell edge detection dataset (CCEDD) with higher precision label corrected by our label correction method. Our LLPC only needs to set three parameters, but yields 30–40% average precision improvement on multiple networks. The qualitative and quantitative experimental results show that our LLPC can improve the quality of manual labels and the accuracy of overlapping cell edge detection. We hope that our study will give a strong boost to the development of the label correction for edge detection and image segmentation. We will release the dataset and code at: <ext-link ext-link-type="uri" xlink:href="https://github.com/nachifur/LLPC" xmlns:xlink="http://www.w3.org/1999/xlink">https://github.com/nachifur/LLPC</ext-link>.}
 }
 ```
 # 8. Terms of use 
