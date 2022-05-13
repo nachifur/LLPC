@@ -26,6 +26,8 @@ conda activate LLPC
 The data folders should be:
 ```
 LLPC
+    * data_processing
+    * unet_plus_plus_BCEloss
     * CCEDD
         - label_correct
             - edge
