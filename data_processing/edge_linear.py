@@ -12,7 +12,6 @@ from utils import point_linear_dis, create_dir, Multiprocessing
 from skimage import morphology
 import cv2
 import multiprocessing
-from scipy.misc import imread
 from utils import imshow
 from PIL import Image
 
@@ -56,7 +55,7 @@ def gen_edge(f_img):
 
     edge = np.zeros([imH, imW],dtype='uint8')
     for cell_kernel_data in cell_kernel_datas:
-        if cell_kernel_data['label'] in ['cell', 'kernel']:
+        if True:
             points = cell_kernel_data['points']
             points = np.array(points)
 
@@ -138,7 +137,7 @@ def gen_edge(f_img):
             edge[ynew, xnew] = 255
     
     if debug_g:
-        img = imread(f_img_path)
+        img = cv2.imread(f_img_path,-1)
         sobel_x = cv2.Sobel(img, cv2.CV_16S, 1, 0, ksize=3)
         sobel_y = cv2.Sobel(img, cv2.CV_16S, 0, 1, ksize=3)
         sobel_x = cv2.convertScaleAbs(sobel_x)

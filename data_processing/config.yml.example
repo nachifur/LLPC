@@ -1,7 +1,9 @@
 NETWORK: ENDE            # ENDE, UNET, RCF
 LOSS: BCELoss            # BCELoss, RCFLoss, AWBCELoss
-MODEL_NAME: EdgeDetect
+MODEL_NAME: NestedUNet
 SUBJECT_WORD: cell
+
+DEEP_SUPERVISION: 0      # 1:True, 0:False (for NestedUNet)
 
 APPEND: 0                # 1:True, 0:False
 BACKUP: 0                # 1:True, 0:False

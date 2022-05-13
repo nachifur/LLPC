@@ -3,6 +3,7 @@ BACKUP: 0
 BATCH_SIZE: 4
 BETA1: 0.0
 BETA2: 0.9
+DEEP_SUPERVISION: 0
 GPU:
 - 0
 INPUT_SIZE_H: 192
@@ -12,7 +13,7 @@ LOSS: BCELoss
 LR: 0.0001
 MIDDLE_RES_NUM: 4
 MODEL_NAME: EdgeDetect
-NETWORK: ENDE
+NETWORK: NestedUNet
 RESULTS: ./checkpoints/cell/results
 RESULTS_SAMPLE: 1
 SAMPLE_SIZE: 4
@@ -20,10 +21,10 @@ SEED: 10
 SPLIT: 1
 SPLIT_NUM: 4
 SUBJECT_WORD: cell
-TEST_EDGE_FLIST: ../cell_data/label_no_correct/datasets_split/cell_edge_split_test.flist
-TEST_FLIST: ../cell_data/label_no_correct/datasets_split/cell_png_split_test.flist
-TRAIN_EDGE_FLIST: ../cell_data/label_no_correct/datasets_split/cell_edge_split_train.flist
-TRAIN_FLIST: ../cell_data/label_no_correct/datasets_split/cell_png_split_train.flist
-VAL_EDGE_FLIST: ../cell_data/label_no_correct/datasets_split/cell_edge_split_val.flist
-VAL_FLIST: ../cell_data/label_no_correct/datasets_split/cell_png_split_val.flist
+TEST_EDGE_FLIST: /home/liu/disk12t/liu_data/cell_edge_detection/paper_test/data_processing_improve/new_ccedd/label_no_correct/datasets_split/cell_edge_split_test.flist
+TEST_FLIST: /home/liu/disk12t/liu_data/cell_edge_detection/paper_test/data_processing_improve/new_ccedd/label_no_correct/datasets_split/cell_png_split_test.flist
+TRAIN_EDGE_FLIST: /home/liu/disk12t/liu_data/cell_edge_detection/paper_test/data_processing_improve/new_ccedd/label_no_correct/datasets_split/cell_edge_split_train.flist
+TRAIN_FLIST: /home/liu/disk12t/liu_data/cell_edge_detection/paper_test/data_processing_improve/new_ccedd/label_no_correct/datasets_split/cell_png_split_train.flist
+VAL_EDGE_FLIST: /home/liu/disk12t/liu_data/cell_edge_detection/paper_test/data_processing_improve/new_ccedd/label_no_correct/datasets_split/cell_edge_split_val.flist
+VAL_FLIST: /home/liu/disk12t/liu_data/cell_edge_detection/paper_test/data_processing_improve/new_ccedd/label_no_correct/datasets_split/cell_png_split_val.flist
 VERBOSE: 0

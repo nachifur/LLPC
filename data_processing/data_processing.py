@@ -36,22 +36,26 @@ def data_processing(DATA_PATH, ratio_list, debug, label_correct=True):
     EDGE_SPLIT_SAVE_PATH = os.path.join(
         DATA_PATH, 'edge_split')  # edge split savepath
 
+    JSON_SAVE_PATH = os.path.join(
+        DATA_PATH, 'json_correct')  # .json correct savepath
+
     # save path
     create_dir(DATA_SAVE_PATH)
+    create_dir(JSON_SAVE_PATH)
     if split:
         create_dir(IMG_SPLIT_SAVE_PATH)
         create_dir(EDGE_SPLIT_SAVE_PATH)
 
     # generate edge from points
-    # time_start=time.time()
-    # print(time_start)
-    # if label_correct:
-    #     gen_edge_from_point_base_gradient(DATA_PATH, debug)
-    # else:
-    #     gen_edge_from_point(DATA_PATH, debug)
-    # time_end=time.time()
-    # print(time_end)
-    # print('generate edge from points time cost',time_end-time_start,'s')
+    time_start=time.time()
+    print(time_start)
+    if label_correct:
+        gen_edge_from_point_base_gradient(DATA_PATH, debug)
+    else:
+        gen_edge_from_point(DATA_PATH, debug)
+    time_end=time.time()
+    print(time_end)
+    print('generate edge from points time cost',time_end-time_start,'s')
     if debug==0:
         subject_word = config['SUBJECT_WORD']
 

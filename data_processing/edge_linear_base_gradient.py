@@ -12,16 +12,18 @@ from utils import point_linear_dis, create_dir, Multiprocessing
 from skimage import morphology
 import cv2
 import multiprocessing
-from scipy.misc import imread
 from utils import imshow, imshow_img_point
 from PIL import Image
+import copy
+from scipy import stats
 
 
 def gen_edge_from_point_base_gradient(data_path, debug):
     print("****** generate edge from point ->START ******\n")
-    global edge_path, jsons_path, img_path, debug_g
+    global edge_path, jsons_path, img_path, jsons_correct_path, debug_g
     debug_g = debug
     jsons_path = os.path.join(data_path, 'json')
+    jsons_correct_path = os.path.join(data_path, 'json_correct')
     edge_path = os.path.join(data_path, 'edge')
     create_dir(edge_path)
     f_jsons = sorted(os.listdir(jsons_path))
@@ -42,12 +44,12 @@ def gen_edge_from_point_base_gradient(data_path, debug):
 
 def gen_edge_base_gradient(f_img):
     # Jiawei Liu <liujiawei18@mails.ucas.ac.cn>
-    global edge_path, img_path, jsons_path, debug_g
+    global edge_path, img_path, jsons_path, jsons_correct_path, debug_g
     f_img_path = os.path.join(img_path, f_img.split('.')[0]+".png")
     f_json_path = os.path.join(jsons_path, f_img)
     data_id = f_img.split('.')[0]
     # load gradient
-    img = imread(f_img_path)
+    img = cv2.imread(f_img_path, -1)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     sobel_x = cv2.Sobel(gray, cv2.CV_16S, 1, 0, ksize=3)
     sobel_y = cv2.Sobel(gray, cv2.CV_16S, 0, 1, ksize=3)
@@ -59,65 +61,91 @@ def gen_edge_base_gradient(f_img):
     # load edge point
     with open(f_json_path) as f_obj:
         json_datas = json.load(f_obj)
+    json_data_correct = copy.deepcopy(json_datas)
     imH = json_datas['imageHeight']
     imW = json_datas['imageWidth']
     edge = np.zeros([imH, imW])
     cell_kernel_datas = json_datas['shapes']
     point_a = []
     point_edit_0 = []
+    point_edit_01 = []
     point_edit = []
     point_s = []
-    search_radius = 7
+    
+    # ************************parameters setting************************
+
+    # Parameters that need to be adjusted
+    search_radius = 15
+    grad_v_suppress = 4 
+    cell_group_num = [14, 14]
+
+    # Parameters that do not need to be adjusted
+    group_num = 3  # 3,5,7...
     spacing = 1
     edge_width = np.sqrt(2)/2
+    interp_step = 1 
+
+    # ************************parameters setting************************
 
     # edit edge based on gradient
+    i = 0
     for cell_kernel_data in cell_kernel_datas:
         if cell_kernel_data['label'] in ['cell', 'kernel']:
+            # if True:
             points = cell_kernel_data['points']
             points = np.array(points)
 
             y = points[:, 1]
             x = points[:, 0]
 
-            group_num = 5  # 3,5,7...
             # filter label noise
             if group_num < len(x):
-                point_s.append([x[:], y[:]])
+                x_edit_0, y_edit_0 = interp_point(
+                    x, y, search_radius, interp_num=2/5, uneven=True)
+
+                point_s.append([x_edit_0[:], y_edit_0[:]])
 
                 # edit edge based on gradient
-                grad_v_suppress = 20  # gradient suppression value:25-35
                 x_edit_0, y_edit_0, x_a, y_a = edit_edge_base_grad(
-                    x, group_num, y, search_radius, imW, imH, spacing, edge_width, gradient_GaussianBlur, grad_v_suppress)
+                    x_edit_0, group_num, y_edit_0, search_radius, imW, imH, spacing, edge_width, gradient_GaussianBlur, grad_v_suppress)
 
                 # Linear interpolation where the spacing is large
-                interp_step = 1  # 1<=interp_step<3. The smaller the value, the finer the fit
                 x_edit_0, y_edit_0 = interp_point(
-                    x_edit_0, y_edit_0, interp_step)
+                    x_edit_0, y_edit_0, interp_step, interp_num=-1)
 
                 # Use local weighted linear fitting to smooth edges, point->edges
                 # 1.delete_end_point=-1, space=1 -> smooth edges, the sampling point interval can be adjusted by interp_step.
                 # 2.delete_end_point=1,2,etc, space!=1, the sampling point interval can be adjusted by sample_step.
                 # cell_group_num is odd, (cell_group_num-1)/2>delete_end_point
-                cell_group_num = 7
                 x_edit_1, y_edit_1 = local_linear_fit_edge(
-                    x_edit_0, y_edit_0, cell_kernel_data['label'], interp_step, cell_group_num, delete_end_point=-1, sample_step=1)
+                    x_edit_0, y_edit_0, cell_kernel_data['label'], cell_group_num, delete_end_point=-1, sample_step=1)
 
                 # Keep the edges continuous
-                interp_step = 0.5
                 x_edit_2, y_edit_2 = interp_point(
-                    x_edit_1, y_edit_1, interp_step)
+                    x_edit_1, y_edit_1, 0.5)
 
         point_edit_0.append([x_edit_0, y_edit_0])
         point_a.append([x_a, y_a])
         x_edit_2, y_edit_2 = limit_xy(imW, x_edit_2, imH, y_edit_2)
         point_edit.append([x_edit_2, y_edit_2])
 
+        # correct json
+        point_edit_list = []
+        for k in range(len(x_edit_2)):
+            point_edit_list.append([x_edit_2[k], y_edit_2[k]])
+        json_data_correct['shapes'][i]['points'] = point_edit_list
+
+        i = i+1
+
+    # save correct json
+    with open(os.path.join(jsons_correct_path, f_img), "w") as json_file:
+        json.dump(json_data_correct, json_file)
     if debug_g:
         gradient_img = Image.fromarray(gradient)
         # candidate points, original points, smooth edge, discrete edge digital image
-        # imshow_img_point(gradient_img, [[], [], [], point_edit])
-        imshow_img_point(gradient_img, [point_a, point_s, point_edit_0, point_edit])
+        imshow_img_point(gradient_img, [[], [], [], point_edit])
+        imshow_img_point(
+            gradient_img, [point_a, point_s, point_edit_0, point_edit])
 
         sobel_x = cv2.Sobel(img, cv2.CV_16S, 1, 0, ksize=3)
         sobel_y = cv2.Sobel(img, cv2.CV_16S, 0, 1, ksize=3)
@@ -125,7 +153,7 @@ def gen_edge_base_gradient(f_img):
         sobel_y = cv2.convertScaleAbs(sobel_y)
         gradient = cv2.addWeighted(sobel_x, 0.5, sobel_y, 0.5, 0)
         for point in point_edit:
-            edge[(point[1]).astype(int),(point[0]).astype(int)] = uint8(255)
+            edge[(point[1]).astype(int), (point[0]).astype(int)] = uint8(255)
         edge[edge > 0] = 1
         edge = (morphology.skeletonize(edge)).astype(np.uint8)
         edge[edge == 1] = 1
@@ -134,7 +162,7 @@ def gen_edge_base_gradient(f_img):
     else:
         # genarte edge image from point
         for point in point_edit:
-            edge[(point[1]).astype(int),(point[0]).astype(int)] = uint8(255)
+            edge[(point[1]).astype(int), (point[0]).astype(int)] = uint8(255)
         edge[edge > 0] = 1
         edge = (morphology.skeletonize(edge)).astype(np.uint8)
         edge[edge == 1] = 255
@@ -155,29 +183,48 @@ def limit_xy(imW, x_edit, imH, y_edit):
     return x_edit, y_edit
 
 
-def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_group_num, delete_end_point=-1, sample_step=1, Weight_speed=1):
-    # Use local weighted linear fitting to smooth edges, point->edges
-    # select bandwidth (h): McCrary, Justin. 2008. “Manipulation of the runningvariable in the regression discontinuity design:A density test.” Journal of Econometrics 142 (2):698–714.
-    #                       Ghanem D, Zhang J. ‘Effortless Perfection:’Do Chinese cities manipulate air pollution data?[J]. Journal of Environmental Economics and Management, 2014, 68(2): 203-225.
-    point_num = len(x_edit_0)
+def check_reapt(point):
+    # check repeat points
+    x_edit = point[0]
+    y_edit = point[1]
+    x_edit_check = np.array([])
+    y_edit_check = np.array([])
+    xy_edit = []
+    for i_check in range(len(x_edit)):
+        if i_check > 0 and i_check <= len(x_edit)-1:
+            if xy_edit[-1][0] != x_edit[i_check] or xy_edit[-1][1] != y_edit[i_check]:
+                x_edit_check = np.append(x_edit_check, x_edit[i_check])
+                y_edit_check = np.append(y_edit_check, y_edit[i_check])
+                xy_edit.append([x_edit[i_check], y_edit[i_check]])
+            else:
+                pass
+                # print("repeat point")
+        else:
+            x_edit_check = np.append(x_edit_check, x_edit[i_check])
+            y_edit_check = np.append(y_edit_check, y_edit[i_check])
+            xy_edit.append([x_edit[i_check], y_edit[i_check]])
+    return [x_edit_check, y_edit_check]
 
+
+def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, cell_group_num, delete_end_point=-1, sample_step=1):
+    # Use local weighted linear fitting to smooth edges, point->edges
+    # iii=0
+    point_num = len(x_edit_0)
     if cell_kernel == 'cell':
-        group_num = int(interp_step*point_num/40) if int(interp_step *
-                                                         point_num/40) > cell_group_num else cell_group_num
-        a = 10
+        group_num = cell_group_num[0]
     else:
-        group_num = int(interp_step*point_num /
-                        10) if int(interp_step*point_num/10) > 3 else 3
-        a = 5
-    c = int(group_num*interp_step)/6
+        group_num = cell_group_num[1]
 
     fit_radius = int((group_num-1)/2)
+    h = fit_radius/2 if fit_radius/2>1 else 1
+    
     flag = 0
     if delete_end_point == -1:
         flag = 1
         delete_end_point = fit_radius-0.5
-    if cell_kernel == 'kernel':
-        delete_end_point = 0
+    else:
+        if cell_kernel == 'kernel':
+            delete_end_point = 0
     group_spacing = int((fit_radius-delete_end_point)*2)
 
     num_gap = point_num  # cyclic: num_gap = point_num, acyclic: num_gap = point_num-1
@@ -253,11 +300,6 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
             else:
                 fit_x = np.array([sample_x[0, fit_radius+1]])
 
-            b = 2*np.std(sample_y)/np.sqrt(num_x)
-            h = a*b + c
-            if h == 0:
-                h = 1
-
             fit_y = np.zeros_like(fit_x)
             temp = np.mat(np.ones((2, num_x)))
             temp[1, :] = sample_x
@@ -270,14 +312,6 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
                     K_h_all[k_w] = gaussian_kernel(
                         (fit_x[k_fit_y]-sample_x[1, k_w])/h)/h
                 sum_K_h_all = sum(K_h_all)
-                if flag == 1:
-                    max_k_h = np.max(K_h_all)
-                    # K_h correction
-                    for k_w in range(0, num_x):
-                        if k_w == 0+delete_end_point or k_w == num_x-1-delete_end_point:
-                            # Keep the edges continuous
-                            K_h_all[k_w] = K_h_all[k_w]+max_k_h*1.5
-                    sum_K_h_all = sum(K_h_all)
                 # compute w  
                 for k_w in range(0, num_x):
                     w[k_w, k_w] = K_h_all[k_w] / \
@@ -298,13 +332,16 @@ def local_linear_fit_edge(x_edit_0, y_edit_0, cell_kernel, interp_step, cell_gro
             y_edit_1 = np.append(y_edit_1, np.array(
                 point_sample[1, :]))
 
-            # plot
-            # x_edit_1 = np.append(x_edit_1,np.array(point_sample[0,:]))
-            # y_edit_1 = np.append(y_edit_1,np.array(point_sample[1,:]))
+            # iii = iii+1
+            # if iii==20:
+            #     plt.plot(x_edit_1, y_edit_1, '-b')
+            #     plt.show()
+            #     iii = 0
+
     return x_edit_1, y_edit_1
 
 
-def interp_point(x_edit_0, y_edit_0, interp_step, cyclic=True):
+def interp_point(x_edit_0, y_edit_0, interp_step, cyclic=True, interp_num=-1, uneven=False):
     # Linear interpolation where the spacing is large
     x_edit_0 = x_edit_0.astype(float)
     y_edit_0 = y_edit_0.astype(float)
@@ -327,51 +364,93 @@ def interp_point(x_edit_0, y_edit_0, interp_step, cyclic=True):
     for id in range(len(split_id)):
         if split_id[id] == len(x_edit_0):
             if cyclic:
-                step = interp_step if x_edit_0[0] > x_edit_0[-1] else -interp_step
-                x_e = np.arange(x_edit_0[-1]+step, x_edit_0[0], step)
-                step = interp_step if y_edit_0[0] > y_edit_0[-1] else -interp_step
-                y_e = np.arange(y_edit_0[-1]+step, y_edit_0[0], step)
-                if len(x_e) > len(y_e):
-                    if x_edit_0[0] > x_edit_0[-1]:
-                        l_1 = [x_edit_0[-1], x_edit_0[0]]
-                        l_2 = [y_edit_0[-1], y_edit_0[0]]
+                if uneven and interp_num > 0 and interp_num < 1:
+                    x_points = [x_edit_0[-1], x_edit_0[0]]
+                    y_points = [y_edit_0[-1], y_edit_0[0]]
+                    point_xy = uneven_insert_points(
+                        x_points, y_points, interp_step, interp_scale=interp_num)
+                    x_e = np.array(point_xy[0, :])[0, 1:-1]
+                    y_e = np.array(point_xy[1, :])[0, 1:-1]
+                else:
+                    if interp_num == -1 or interp_num == 0:
+                        step = interp_step if x_edit_0[0] > x_edit_0[-1] else -interp_step
+                        x_e = np.arange(x_edit_0[-1]+step, x_edit_0[0], step)
+                        step = interp_step if y_edit_0[0] > y_edit_0[-1] else -interp_step
+                        y_e = np.arange(y_edit_0[-1]+step, y_edit_0[0], step)
                     else:
-                        l_1 = [x_edit_0[0], x_edit_0[-1]]
-                        l_2 = [y_edit_0[0], y_edit_0[-1]]
+                        x_e = np.linspace(
+                            x_edit_0[-1], x_edit_0[0], interp_num+2)
+                        x_e = x_e[1:-1]
+                        y_e = np.linspace(
+                            y_edit_0[-1], y_edit_0[0], interp_num+2)
+                        y_e = y_e[1:-1]
+
+                    if len(x_e) > len(y_e):
+                        if x_edit_0[0] > x_edit_0[-1]:
+                            l_1 = [x_edit_0[-1], x_edit_0[0]]
+                            l_2 = [y_edit_0[-1], y_edit_0[0]]
+                        else:
+                            l_1 = [x_edit_0[0], x_edit_0[-1]]
+                            l_2 = [y_edit_0[0], y_edit_0[-1]]
+                        y_e = np.interp(x_e, l_1, l_2)
+                    elif len(x_e) < len(y_e):
+                        if y_edit_0[0] > y_edit_0[-1]:
+                            l_1 = [x_edit_0[-1], x_edit_0[0]]
+                            l_2 = [y_edit_0[-1], y_edit_0[0]]
+                        else:
+                            l_1 = [x_edit_0[0], x_edit_0[-1]]
+                            l_2 = [y_edit_0[0], y_edit_0[-1]]
+                        x_e = np.interp(y_e, l_2, l_1)
+        else:
+            if uneven and interp_num > 0 and interp_num < 1:
+                x_points = [x_edit_0[split_id[id]-1], x_edit_0[split_id[id]]]
+                y_points = [y_edit_0[split_id[id]-1], y_edit_0[split_id[id]]]
+                point_xy = uneven_insert_points(
+                    x_points, y_points, interp_step, interp_scale=interp_num)
+                x_e = np.array(point_xy[0, :])[0, 1:-1]
+                y_e = np.array(point_xy[1, :])[0, 1:-1]
+            else:
+                if interp_num == -1 or interp_num == 0:
+                    step = interp_step if x_edit_0[split_id[id]
+                                                   ] > x_edit_0[split_id[id]-1] else -interp_step
+                    x_e = np.arange(
+                        x_edit_0[split_id[id]-1]+step, x_edit_0[split_id[id]], step)
+                    step = interp_step if y_edit_0[split_id[id]
+                                                   ] > y_edit_0[split_id[id]-1] else -interp_step
+                    y_e = np.arange(
+                        y_edit_0[split_id[id]-1]+step, y_edit_0[split_id[id]], step)
+                else:
+                    x_e = np.linspace(
+                        x_edit_0[split_id[id]-1], x_edit_0[split_id[id]], interp_num+2)
+                    x_e = x_e[1:-1]
+                    y_e = np.linspace(
+                        y_edit_0[split_id[id]-1], y_edit_0[split_id[id]], interp_num+2)
+                    y_e = y_e[1:-1]
+
+                if len(x_e) > len(y_e):
+                    if x_edit_0[split_id[id]] > x_edit_0[split_id[id]-1]:
+                        l_1 = [x_edit_0[split_id[id]-1],
+                               x_edit_0[split_id[id]]]
+                        l_2 = [y_edit_0[split_id[id]-1],
+                               y_edit_0[split_id[id]]]
+                    else:
+                        l_1 = [x_edit_0[split_id[id]],
+                               x_edit_0[split_id[id]-1]]
+                        l_2 = [y_edit_0[split_id[id]],
+                               y_edit_0[split_id[id]-1]]
                     y_e = np.interp(x_e, l_1, l_2)
                 elif len(x_e) < len(y_e):
-                    if y_edit_0[0] > y_edit_0[-1]:
-                        l_1 = [x_edit_0[-1], x_edit_0[0]]
-                        l_2 = [y_edit_0[-1], y_edit_0[0]]
+                    if y_edit_0[split_id[id]] > y_edit_0[split_id[id]-1]:
+                        l_1 = [x_edit_0[split_id[id]-1],
+                               x_edit_0[split_id[id]]]
+                        l_2 = [y_edit_0[split_id[id]-1],
+                               y_edit_0[split_id[id]]]
                     else:
-                        l_1 = [x_edit_0[0], x_edit_0[-1]]
-                        l_2 = [y_edit_0[0], y_edit_0[-1]]
+                        l_1 = [x_edit_0[split_id[id]],
+                               x_edit_0[split_id[id]-1]]
+                        l_2 = [y_edit_0[split_id[id]],
+                               y_edit_0[split_id[id]-1]]
                     x_e = np.interp(y_e, l_2, l_1)
-        else:
-            step = interp_step if x_edit_0[split_id[id]
-                                           ] > x_edit_0[split_id[id]-1] else -interp_step
-            x_e = np.arange(
-                x_edit_0[split_id[id]-1]+step, x_edit_0[split_id[id]], step)
-            step = interp_step if y_edit_0[split_id[id]
-                                           ] > y_edit_0[split_id[id]-1] else -interp_step
-            y_e = np.arange(
-                y_edit_0[split_id[id]-1]+step, y_edit_0[split_id[id]], step)
-            if len(x_e) > len(y_e):
-                if x_edit_0[split_id[id]] > x_edit_0[split_id[id]-1]:
-                    l_1 = [x_edit_0[split_id[id]-1], x_edit_0[split_id[id]]]
-                    l_2 = [y_edit_0[split_id[id]-1], y_edit_0[split_id[id]]]
-                else:
-                    l_1 = [x_edit_0[split_id[id]], x_edit_0[split_id[id]-1]]
-                    l_2 = [y_edit_0[split_id[id]], y_edit_0[split_id[id]-1]]
-                y_e = np.interp(x_e, l_1, l_2)
-            elif len(x_e) < len(y_e):
-                if y_edit_0[split_id[id]] > y_edit_0[split_id[id]-1]:
-                    l_1 = [x_edit_0[split_id[id]-1], x_edit_0[split_id[id]]]
-                    l_2 = [y_edit_0[split_id[id]-1], y_edit_0[split_id[id]]]
-                else:
-                    l_1 = [x_edit_0[split_id[id]], x_edit_0[split_id[id]-1]]
-                    l_2 = [y_edit_0[split_id[id]], y_edit_0[split_id[id]-1]]
-                x_e = np.interp(y_e, l_2, l_1)
 
         x_extend.append(x_e.astype(float))
         y_extend.append(y_e.astype(float))
@@ -391,7 +470,69 @@ def interp_point(x_edit_0, y_edit_0, interp_step, cyclic=True):
     for y_edit_0_ in y_edit_0_list:
         if len(y_edit_0_) != 0:
             y_edit_0 = np.append(y_edit_0, y_edit_0_)
+
+    # # check repeat points
+    x_edit_0, y_edit_0 = check_reapt([x_edit_0, y_edit_0])
     return x_edit_0, y_edit_0
+
+
+def uneven_insert_points(x_points, y_points, interp_step, interp_scale=1/5):
+    dis_points = np.sqrt((x_points[1]-x_points[0])
+                         ** 2+(y_points[1]-y_points[0])**2)
+    max_gap = dis_points*interp_scale
+    min_gap = interp_step
+
+    # cal num_insert
+    num_insert = -1
+    dis_max = max_gap+1
+    while(True):
+        num_insert = num_insert+2
+        p = np.linspace(0, 1, num_insert+4)
+        x = stats.norm.ppf(p[1:-1])
+        dis_min = (x[int((len(x)-1)/2)-1]-x[int((len(x)-1)/2)-2]) / \
+            (2*max(x))*dis_points
+        if dis_max < max_gap and dis_min < min_gap:
+            break
+        dis_max = (x[1] - x[0])/(2*max(x))*dis_points
+
+    # cal insert points
+    if num_insert % 2 == 0:
+        num_insert = num_insert+1
+    p = np.linspace(0, 1, num_insert+4)
+    x = stats.norm.ppf(p[1:-1])
+    y = np.zeros_like(x)*5
+
+    if len(x) > 3:
+        max_x = max(x)
+        num_x = len(x)
+        temp = x[0:int((num_x+1)/2)].copy()
+        x[0:int((num_x+1)/2)] = x[int((num_x-1)/2):]-max_x
+        x[int((num_x-1)/2):] = temp+max_x
+
+    x = x - min(x)
+    x = x/max(x)*dis_points
+
+    # x[1]-x[0]
+
+    # rotating coordinate system
+    cos_theta = (x_points[-1]-x_points[0]) / \
+        (dis_points)
+    sin_theta = (y_points[-1]-y_points[0]) / \
+        (dis_points)
+    M_p = np.mat([[1, 0, x_points[0]],
+                  [0, 1, y_points[0]],
+                  [0, 0, 1]])
+    M_r = np.mat([[cos_theta, -sin_theta, 0],
+                  [sin_theta, cos_theta, 0],
+                  [0, 0, 1]])
+    M = M_p*M_r
+
+    point_mat = np.mat(np.ones((3, len(x))))
+    point_mat[0, :] = x
+    point_mat[1, :] = y
+
+    point_mat_new = M*point_mat
+    return point_mat_new
 
 
 def edit_edge_base_grad(x, group_num, y, search_radius, imW, imH, spacing, edge_width, gradient_GaussianBlur, grad_v_suppress):
@@ -400,6 +541,8 @@ def edit_edge_base_grad(x, group_num, y, search_radius, imW, imH, spacing, edge_
     y_edit_0 = np.array([])
     x_a = np.array([])
     y_a = np.array([])
+    x = limit_fc(imW,x)
+    y = limit_fc(imH,y)
     for i in range(0, x.size):
         x_i = np.array([])
         y_i = np.array([])
@@ -434,13 +577,13 @@ def edit_edge_base_grad(x, group_num, y, search_radius, imW, imH, spacing, edge_
 
         # boundary limit
         x_min = x_cur - r_x
-        x_min = 0 if x_min < 0 else x_min
+        x_min = limit_fc(imW, [x_min])[0]
         x_max = x_cur + r_x
-        x_max = imW-1 if x_max > imW-1 else x_max
+        x_max = limit_fc(imW, [x_max])[0]
         y_min = y_cur - r_y
-        y_min = 0 if y_min < 0 else y_min
+        y_min = limit_fc(imH, [y_min])[0]
         y_max = y_cur + r_y
-        y_max = imH-1 if y_max > imH-1 else y_max
+        y_max = limit_fc(imH, [y_max])[0]
 
         # get max point
         xnew_i = np.array([]).astype(int)
@@ -450,6 +593,10 @@ def edit_edge_base_grad(x, group_num, y, search_radius, imW, imH, spacing, edge_
                 if point_linear_dis(point_0, point_1, [i_local_x, i_local_y]) < edge_width:
                     xnew_i = np.append(xnew_i, [i_local_x])
                     ynew_i = np.append(ynew_i, [i_local_y])
+
+        if len(xnew_i) == 0:
+            xnew_i = np.append(xnew_i, x_cur)
+            ynew_i = np.append(ynew_i, y_cur)
 
         x_a = np.append(x_a, xnew_i)
         y_a = np.append(y_a, ynew_i)
@@ -473,7 +620,17 @@ def edit_edge_base_grad(x, group_num, y, search_radius, imW, imH, spacing, edge_
 
         x_edit_0 = np.append(x_edit_0, x_edit_point)
         y_edit_0 = np.append(y_edit_0, y_edit_point)
+
+    # check repeat points
+    # point = check_reapt([x_edit_0, y_edit_0])
     return x_edit_0, y_edit_0, x_a, y_a
+
+
+def limit_fc(imW, x):
+    x = np.array(x)
+    x[x<0]=0
+    x[x>imW-1]=imW-1
+    return x
 
 
 def gaussian_kernel(x, Weight_speed=1):
