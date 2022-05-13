@@ -12,7 +12,7 @@ conda env create -f install.yaml
 ```
 activate environments
 ```
-conda activate automatic_label_correction_based_CCEDD
+conda activate LLPC
 ```
 # 3. Datset - CCEDD
 <p align="center">
@@ -25,7 +25,7 @@ conda activate automatic_label_correction_based_CCEDD
 ## 3.1 Datset Structure
 The data folders should be:
 ```
-automatic_label_correction_based_CCEDD
+LLPC
     * CCEDD
         - label_correct
             - edge
@@ -78,7 +78,7 @@ python data_processing/datasets_generate.py 0
 # 4. Training
 ```
 cp data_processing/label_correct_config.yml unet_plus_plus_BCEloss/config.yml.example
-conda activate automatic_label_correction_based_CCEDD
+conda activate LLPC
 cd unet_plus_plus_BCEloss
 python run.py
 ```

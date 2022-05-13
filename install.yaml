@@ -1,4 +1,4 @@
-name: automatic_label_correction_based_CCEDD
+name: LLPC
 channels:
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
   - defaults
