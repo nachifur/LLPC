@@ -101,7 +101,7 @@ OIS:    F(0.739,0.667) = 0.701
 AP:    AP = 0.755
 ```
 
-# 7. Citation
+# 6. Citation
 If you find our work useful in your research, please consider citing:
 ```
 @ARTICLE{10.3389/fninf.2022.895290,
@@ -116,7 +116,7 @@ ISSN={1662-5196},
 ABSTRACT={Accurate labeling is essential for supervised deep learning methods. However, it is almost impossible to accurately and manually annotate thousands of images, which results in many labeling errors for most datasets. We proposes a local label point correction (LLPC) method to improve annotation quality for edge detection and image segmentation tasks. Our algorithm contains three steps: gradient-guided point correction, point interpolation, and local point smoothing. We correct the labels of object contours by moving the annotated points to the pixel gradient peaks. This can improve the edge localization accuracy, but it also causes unsmooth contours due to the interference of image noise. Therefore, we design a point smoothing method based on local linear fitting to smooth the corrected edge. To verify the effectiveness of our LLPC, we construct a largest overlapping cervical cell edge detection dataset (CCEDD) with higher precision label corrected by our label correction method. Our LLPC only needs to set three parameters, but yields 30–40% average precision improvement on multiple networks. The qualitative and quantitative experimental results show that our LLPC can improve the quality of manual labels and the accuracy of overlapping cell edge detection. We hope that our study will give a strong boost to the development of the label correction for edge detection and image segmentation. We will release the dataset and code at: <ext-link ext-link-type="uri" xlink:href="https://github.com/nachifur/LLPC" xmlns:xlink="http://www.w3.org/1999/xlink">https://github.com/nachifur/LLPC</ext-link>.}
 }
 ```
-# 8. Terms of use 
+# 7. Terms of use 
 Terms of use: by downloading the CCEDD you agree to the following terms:
 
 - You will use the data only for non-commercial research and educational purposes.
@@ -124,5 +124,5 @@ Terms of use: by downloading the CCEDD you agree to the following terms:
 - Shenyang Institute of Automation, Chinese Academy of Sciences makes no representations or warranties regarding the data, including but not limited to warranties of non-infringement or fitness for a particular purpose.
 - You accept full responsibility for your use of the data and shall defend and indemnify Shenyang Institute of Automation, Chinese Academy of Sciences, including its employees, officers and agents, against any and all claims arising from your use of the data, including but not limited to your use of any copies of copyrighted images that you may create from the data.
 
-# 9. Contact
+# 8. Contact
 Please contact Jiawei Liu if there is any question (liujiawei18@mails.ucas.ac.cn).
