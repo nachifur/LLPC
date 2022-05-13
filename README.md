@@ -1,12 +1,6 @@
-<p align="center">
-<a href="https://github.com/nachifur/automatic-label-correction-CCEDD" target="_blank">
-<img align="center" alt="CCEDD" src="https://github.com/nachifur/automatic-label-correction-CCEDD/blob/main/CCEDD.jpg" />
-</a>
-</p>
-
 # 1. Resources
-* Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
-* Results on CCEDD: [ENDE_BCELoss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EYqcLCKYIyBCkuV9clTGN1ABHi72SUV6SL_dzdnLookx2A?e=eFxUHt)
+* Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EX0v39dd8kRDhavIoFqxHyoBuqXql9sdPXoyaWptsUvfKw?e=8lMSga)
+* Results on CCEDD: [unet_plus_plus_BCEloss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/Ed4SzbyvuXdCuuaJ-twoEjgB_DBYhc4bwzen4qOE32ZevQ?e=QVyuCK)
 * [paper](https://www.frontiersin.org/articles/10.3389/fninf.2022.895290/full)
 
 # 2. Environments
@@ -21,63 +15,43 @@ activate environments
 conda activate automatic_label_correction_based_CCEDD
 ```
 # 3. Datset - CCEDD
-**Although we provide uncorrected labels, we recommend that you use corrected labels to train the model.**
-## 3.1 Download Datset
-[Download CCEDD](https://mailustceducn-my.sharepoint.com/:f:/g/personal/nachifur_mail_ustc_edu_cn/Es3O42XCo6dDtPuLXh-e_y8BOao96q0GWVyfBuKmr51M4A?e=O0RPgO)
+<p align="center">
+<a href="https://github.com/nachifur/LLPC" target="_blank">
+<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/CCEDD.jpg" />
+</a>
+</p>
 
+**Although we provide original labels (uncorrected), we recommend that you use corrected labels to train deep networks.**
+## 3.1 Datset Structure
 The data folders should be:
 ```
 automatic_label_correction_based_CCEDD
-    * cell_data
+    * CCEDD
         - label_correct
             - edge
             - png
+            - json
         - label_no_correct
             - edge
             - png
+            - json
 ```
+1. download CCEDD
 unzip: 
-* CCEDD/edge_correct.zip -> automatic_label_correction_based_CCEDD/cell_data/label_correct
-* CCEDD/png.zip -> automatic_label_correction_based_CCEDD/cell_data/label_correct
-* CCEDD/edge_no_correct.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
-* CCEDD/png.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
-
-## 3.2 Generate Dataset
+* CCEDD/png.zip -> LLPC/CCEDD/label_correct
+* CCEDD/png.zip -> LLPC/CCEDD/label_no_correct
+2. Generate Dataset
 ```
 cd data_processing
 python data_processing/datasets_generate.py 0
 ```
-
-# 4. Training
-```
-cp data_processing/label_correct_config.yml ENDE_BCEloss/config.yml.example
-conda activate automatic_label_correction_based_CCEDD
-cd ENDE_BCEloss
-python run.py
-```
-# 5. Test / Result
-`python run.py` can complete training, testing, and evaluation. 
-
-You can use the following command to view the evaluation result.
-```
-cd ENDE_BCEloss
-python ENDE_BCEloss/show_eval_result.py
-```
-ENDE_BCEloss Result:
-```
-average precision mean:    0.676
-average recall mean:    0.449
-ODS:    F(0.641,0.542) = 0.588    [th=0.310]
-OIS:    F(0.687,0.522) = 0.593
-AP:    AP = 0.614
-```
-# 6. Automatic Label Correction algorithm
-Our correction algorithm requires the original annotation file. We currently do not publish annotated files, but provide [5 json files](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EcMzbZ5P6d5LhsczwZLqsNABKy-5zNsaERh6hA3XbatEDA?e=ydMerP) for testing. 
-## 1. Unzip Annotated Files
+## 3.2 Local Label Point Correction Algorithm
+Our LLPC requires a original annotation file (`CCEDD/label_correct/json`) and a original image (`CCEDD/label_correct/png`) to generate a corrected edge label (`CCEDD/label_correct/edge`). In fact, we have already provided the edge label (`CCEDD/label_correct/edge`). Therefore, if you are not interested in point correction techniques and focus on the design of edge detection networks, you can skip this section.
+### 3.2.1. Unzip Annotated Files
 unzip: 
-* json.zip -> automatic_label_correction_based_CCEDD/cell_data/label_correct
-* json.zip -> automatic_label_correction_based_CCEDD/cell_data/label_no_correct
-## 2. Debug for Automatic Label Correction algorithm
+* CCEDD/json.zip -> LLPC/CCEDD/label_correct
+* CCEDD/json.zip -> LLPC/CCEDD/label_no_correct
+### 3.2.2. Debug for LLPC
 Edit `data_processing/data_processing.py`, uncomment the code below:
 ```
     generate edge from points
@@ -91,11 +65,40 @@ Edit `data_processing/data_processing.py`, uncomment the code below:
     print(time_end)
     print('generate edge from points time cost',time_end-time_start,'s')
 ```
-Debug for automatic label correction algorithm.
+Debug for LLPC:
 ```
 cd data_processing
 python data_processing/datasets_generate.py 1
 ```
+### 3.2.3. Generating Edges from Points by Our LLPC
+```
+cd data_processing
+python data_processing/datasets_generate.py 0
+```
+# 4. Training
+```
+cp data_processing/label_correct_config.yml unet_plus_plus_BCEloss/config.yml.example
+conda activate automatic_label_correction_based_CCEDD
+cd unet_plus_plus_BCEloss
+python run.py
+```
+# 5. Test / Result
+`python run.py` can complete training, testing, and evaluation. 
+
+You can use the following command to view the evaluation result.
+```
+cd unet_plus_plus_BCEloss
+python unet_plus_plus_BCEloss/show_eval_result.py
+```
+unet_plus_plus_BCEloss Result:
+```
+average precision mean:    0.763
+average recall mean:    0.613
+ODS:    F(0.709,0.674) = 0.691    [th=0.350]
+OIS:    F(0.739,0.667) = 0.701
+AP:    AP = 0.755
+```
+
 # 7. Citation
 If you find our work useful in your research, please consider citing:
 ```
