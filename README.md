@@ -19,13 +19,13 @@ annotated datasets for edge detection and image segmentation.
 
 <p align="center">
 <a href="https://github.com/nachifur/LLPC" target="_blank">
-<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/img/fig1.jpg" />
+<img align="center" alt="Visual comparison of the original label and our corrected label" src="https://github.com/nachifur/LLPC/blob/main/img/fig1.jpg" />
 </a>
 </p>
 
 <p align="center">
 <a href="https://github.com/nachifur/LLPC" target="_blank">
-<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/img/fig8.jpg" />
+<img align="center" alt="Label correction for edge detection and semantic segmentation" src="https://github.com/nachifur/LLPC/blob/main/img/fig8.jpg" />
 </a>
 </p>
 
