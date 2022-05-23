@@ -1,7 +1,27 @@
+# Local Label Point Correction for Edge Detection of Overlapping Cervical Cells
+Our unique contributions are summarized as follows:
+* We are the first to propose a label correction method based on
+annotation points for edge detection and image segmentation.
+By correcting the position of these label points, our label
+correction method can generate higher-quality label, which
+contributes 30–40% AP improvement on multiple baseline
+models.
+* We construct a largest publicly cervical cell edge detection
+dataset based on our LLPC. Our dataset is ten times larger than
+the previous datasets, which greatly facilitates the development
+of overlapping cell edge detection.
+* We present the first publicly available label correction
+benchmark for improving contour annotation. Our study
+serves as a potential catalyst to promote label correction
+research and further paves the way to construct accurately
+annotated datasets for edge detection and image segmentation.
+
+
 # 1. Resources
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EX0v39dd8kRDhavIoFqxHyoBuqXql9sdPXoyaWptsUvfKw?e=8lMSga)
 * Results on CCEDD: [unet_plus_plus_BCEloss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/Ed4SzbyvuXdCuuaJ-twoEjgB_DBYhc4bwzen4qOE32ZevQ?e=QVyuCK)
 * [paper](https://www.frontiersin.org/articles/10.3389/fninf.2022.895290/full)
+* [Early manuscripts in arXiv (Mon, 5 Oct 2020 11:01:45 UTC)](https://arxiv.org/abs/2010.01919v1)
 
 # 2. Environments
 ubuntu18.04+cuda10.2+pytorch1.1.0
@@ -117,6 +137,8 @@ ISSN={1662-5196},
 ABSTRACT={Accurate labeling is essential for supervised deep learning methods. However, it is almost impossible to accurately and manually annotate thousands of images, which results in many labeling errors for most datasets. We proposes a local label point correction (LLPC) method to improve annotation quality for edge detection and image segmentation tasks. Our algorithm contains three steps: gradient-guided point correction, point interpolation, and local point smoothing. We correct the labels of object contours by moving the annotated points to the pixel gradient peaks. This can improve the edge localization accuracy, but it also causes unsmooth contours due to the interference of image noise. Therefore, we design a point smoothing method based on local linear fitting to smooth the corrected edge. To verify the effectiveness of our LLPC, we construct a largest overlapping cervical cell edge detection dataset (CCEDD) with higher precision label corrected by our label correction method. Our LLPC only needs to set three parameters, but yields 30–40% average precision improvement on multiple networks. The qualitative and quantitative experimental results show that our LLPC can improve the quality of manual labels and the accuracy of overlapping cell edge detection. We hope that our study will give a strong boost to the development of the label correction for edge detection and image segmentation. We will release the dataset and code at: <ext-link ext-link-type="uri" xlink:href="https://github.com/nachifur/LLPC" xmlns:xlink="http://www.w3.org/1999/xlink">https://github.com/nachifur/LLPC</ext-link>.}
 }
 ```
+
+
 # 7. Terms of Use 
 Terms of use: by downloading the CCEDD you agree to the following terms:
 
