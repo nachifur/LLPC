@@ -17,6 +17,18 @@ research and further paves the way to construct accurately
 annotated datasets for edge detection and image segmentation.
 
 
+<p align="center">
+<a href="https://github.com/nachifur/LLPC" target="_blank">
+<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/img/fig1.jpg" />
+</a>
+</p>
+
+<p align="center">
+<a href="https://github.com/nachifur/LLPC" target="_blank">
+<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/img/fig8.jpg" />
+</a>
+</p>
+
 # 1. Resources
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EX0v39dd8kRDhavIoFqxHyoBuqXql9sdPXoyaWptsUvfKw?e=8lMSga)
 * Results on CCEDD: [unet_plus_plus_BCEloss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/Ed4SzbyvuXdCuuaJ-twoEjgB_DBYhc4bwzen4qOE32ZevQ?e=QVyuCK)
@@ -37,7 +49,7 @@ conda activate LLPC
 # 3. Datset - CCEDD
 <p align="center">
 <a href="https://github.com/nachifur/LLPC" target="_blank">
-<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/CCEDD.jpg" />
+<img align="center" alt="CCEDD" width = "300" height = "120" src="https://github.com/nachifur/LLPC/blob/main/img/CCEDD.jpg" />
 </a>
 </p>
 
