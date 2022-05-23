@@ -1,17 +1,17 @@
 # Local Label Point Correction for Edge Detection of Overlapping Cervical Cells
 Our unique contributions are summarized as follows:
-* We are the first to propose a label correction method based on
-annotation points for edge detection and image segmentation.
+* We are the **first to propose a label correction method based on
+annotation points for edge detection and image segmentation**.
 By correcting the position of these label points, our label
 correction method can generate higher-quality label, which
 contributes 30–40% AP improvement on multiple baseline
 models.
-* We construct a largest publicly cervical cell edge detection
-dataset based on our LLPC. Our dataset is ten times larger than
+* We construct a **largest publicly cervical cell edge detection
+dataset** based on our LLPC. Our dataset is ten times larger than
 the previous datasets, which greatly facilitates the development
 of overlapping cell edge detection.
-* We present the first publicly available label correction
-benchmark for improving contour annotation. Our study
+* We present the **first publicly available label correction
+benchmark for improving contour annotation**. Our study
 serves as a potential catalyst to promote label correction
 research and further paves the way to construct accurately
 annotated datasets for edge detection and image segmentation.
