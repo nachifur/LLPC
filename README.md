@@ -4,7 +4,7 @@ Our unique contributions are summarized as follows:
 annotation points for edge detection and image segmentation**.
 By correcting the position of these label points, our label
 correction method can generate higher-quality label, which
-contributes 30–40% AP improvement on multiple baseline
+contributes 30–40 AP improvement on multiple baseline
 models.
 * We construct a **largest publicly cervical cell edge detection
 dataset** based on our LLPC. Our dataset is ten times larger than
