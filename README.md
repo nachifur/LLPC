@@ -30,6 +30,8 @@ annotated datasets for edge detection and image segmentation.
 </p>
 
 # 1. Resources
+[国内资源链接(密码：e2ww)](https://rec.ustc.edu.cn/share/16db9c80-15d5-11ef-9ca4-7b154f4fe8b0)
+
 * Dataset: [CCEDD](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/EX0v39dd8kRDhavIoFqxHyoBuqXql9sdPXoyaWptsUvfKw?e=8lMSga)
 * Results on CCEDD: [unet_plus_plus_BCEloss + corrected label](https://mailustceducn-my.sharepoint.com/:u:/g/personal/nachifur_mail_ustc_edu_cn/Ed4SzbyvuXdCuuaJ-twoEjgB_DBYhc4bwzen4qOE32ZevQ?e=QVyuCK)
 * [paper](https://www.frontiersin.org/articles/10.3389/fninf.2022.895290/full)
